@@ -19,6 +19,8 @@ npm install react-audio-visual
 yarn add react-audio-visual
 ```
 
+### useage
+
 ```jsx
 import AudioVisual from "react-audio-visual";
 
