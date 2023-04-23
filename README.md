@@ -1,4 +1,4 @@
-### A audio visual component
+### A react audio visual component
 
 
 <div align="center">
