@@ -23,7 +23,7 @@ yarn add react-audio-visual
 import AudioVisual from "react-audio-visual";
 
 const TestAudioPlayer = () => {
-  const audio = useRef < HTMLAudioElement > (null);
+  const audio = useRef<HTMLAudioElement>(null);
 
   return (
     <div
