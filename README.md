@@ -1,8 +1,11 @@
-### a beautiful react audio component
+### A audio visual component
+
 
 <div align="center">
     <img width="400" src="https://raw.githubusercontent.com/icefee/react-audio-visual/main/public/screen_shot.jpg" alt="react audio visual">
 </div>
+
+
 
 [online demo](https://icefee.github.io/react-audio-visual)
 
