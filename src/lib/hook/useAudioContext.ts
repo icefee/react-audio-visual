@@ -35,7 +35,6 @@ function useAudioContext(audio: HTMLAudioElement | null, fftSize = 2048) {
         mediaSource.current!.connect(analyser.current!);
         analyser.current!.connect(audioContext.current.destination);
         audioContext.current.resume();
-        startAnalyser();
         return () => {
             audioContext.current!.suspend();
             mediaSource.current!.disconnect();
