@@ -59,18 +59,22 @@ function AudioVisual({
     const canvas = useRef<HTMLCanvasElement | null>(null)
 
     const drawCanvas = (buffer: Uint8Array) => {
-        const interval = width / Math.floor(width / (barInternal * dpr));
-        const gapWidth = barSpace * dpr;
-        const ctx = canvas.current!.getContext('2d')!;
-        const gradient = ctx.createLinearGradient(width / 2, 0, width / 2, height);
-        for (let i = 0; i < colors.length; i++) {
-            gradient.addColorStop(i / (colors.length - 1), colors[i]);
+        const interval = width / Math.floor(width / (barInternal * dpr))
+        const gapWidth = barSpace * dpr
+        const ctx = canvas.current!.getContext('2d')!
+        if (colors.length > 1) {
+            const gradient = ctx.createLinearGradient(width / 2, 0, width / 2, height)
+            for (let i = 0; i < colors.length; i++) {
+                gradient.addColorStop(i / (colors.length - 1), colors[i])
+            }
+            ctx.fillStyle = gradient
         }
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = gradient;
+        else {
+            ctx.fillStyle = colors[0] ?? '#fff'
+        }
         const step = Math.floor(
             interval * fftSize / width
-        );
+        )
         const steps = Math.floor(fftSize / step);
         if (!caps.current || caps.current && caps.current.length !== steps) {
             caps.current = Array.from({ length: steps }, _ => 0)
@@ -80,6 +84,7 @@ function AudioVisual({
                 v => v > 0 ? v - 1 : v
             )
         }
+        ctx.clearRect(0, 0, width, height)
         for (let i = 0; i < steps; i++) {
             const intensity = Math.round(
                 buffer.slice(i, i + step).reduce(
