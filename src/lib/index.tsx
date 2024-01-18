@@ -20,16 +20,35 @@ interface AudioVisualProps {
      * default: ['#ff0000a0', '#ffff00a0', '#00ffffa0']
      */
     colors?: string[];
+    /**
+     * interval of bar, default 4, not equivalent to bar width
+     */
+    barInternal?: number;
+    /**
+     * space between bars, default 1
+     */
+    barSpace?: number;
+    /**
+     * height of caps, default 2
+     */
+    capHeight?: number;
+    /**
+     * gap between caps, default 2
+     */
+    capGap?: number;
 }
 
-function AudioVisual({ audio, fftSize = 1024, colors = ['#ff0000a0', '#ffff00a0', '#00ffffa0'] }: AudioVisualProps) {
+function AudioVisual({
+    audio,
+    fftSize = 2048,
+    colors = ['#ff0000a0', '#ffff00a0', '#00ffffa0'],
+    barInternal = 4,
+    barSpace = 1,
+    capHeight = 2,
+    capGap = 2
+}: AudioVisualProps) {
 
     const dpr = window.devicePixelRatio;
-    const barWidth = 4 * dpr;
-    const barSpace = 1 * dpr;
-    const capHeight = 2;
-    const capGap = 2;
-
     const caps = useRef<number[]>()
 
     const { byteFrequency } = useAudioContext(audio.current, fftSize)
@@ -40,6 +59,8 @@ function AudioVisual({ audio, fftSize = 1024, colors = ['#ff0000a0', '#ffff00a0'
     const canvas = useRef<HTMLCanvasElement | null>(null)
 
     const drawCanvas = (buffer: Uint8Array) => {
+        const interval = width / Math.floor(width / (barInternal * dpr));
+        const gapWidth = barSpace * dpr;
         const ctx = canvas.current!.getContext('2d')!;
         const gradient = ctx.createLinearGradient(width / 2, 0, width / 2, height);
         for (let i = 0; i < colors.length; i++) {
@@ -48,7 +69,7 @@ function AudioVisual({ audio, fftSize = 1024, colors = ['#ff0000a0', '#ffff00a0'
         ctx.clearRect(0, 0, width, height);
         ctx.fillStyle = gradient;
         const step = Math.floor(
-            (barWidth + barSpace) * fftSize / width
+            interval * fftSize / width
         );
         const steps = Math.floor(fftSize / step);
         if (!caps.current || caps.current && caps.current.length !== steps) {
@@ -66,11 +87,12 @@ function AudioVisual({ audio, fftSize = 1024, colors = ['#ff0000a0', '#ffff00a0'
                     0
                 ) / step)
             if (intensity > caps.current[i]) {
-                caps.current[i] = intensity;
+                caps.current[i] = intensity
             }
-            const x = i * (barWidth + barSpace) + barSpace / 2;
-            ctx.fillRect(x, height - intensity * height / 255, barWidth, intensity * height / 255);
-            ctx.fillRect(x, height - caps.current[i] * height / 255 - capHeight - capGap, barWidth, capHeight);
+            const x = i * interval + gapWidth / 2
+            const barWidth = Math.max(interval - gapWidth, 1)
+            ctx.fillRect(x, height - intensity * height / 255, barWidth, intensity * height / 255)
+            ctx.fillRect(x, height - caps.current[i] * height / 255 - capHeight * dpr, barWidth, capHeight * dpr)
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "react-audio-visual",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "a react audio visual component",
   "main": "index.js",
   "types": "index.d.ts",
@@ -43,5 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "dependencies": {}
 }

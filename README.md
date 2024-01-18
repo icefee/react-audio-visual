@@ -1,6 +1,5 @@
 ### A react audio visual component
 
-
 <div align="center">
     <img width="400" src="https://icefee.github.io/react-audio-visual/screen_shot.jpg" alt="react audio visual">
 </div>
@@ -48,11 +47,48 @@ const TestAudioPlayer = () => {
       >
         <AudioVisual
           audio={audio}
-          fftSize={1024} // optional, default: 1024
-          colors={["#ff0000a0", "#ffff00a0", "#00ffffa0"]} // optional, default: ["#ff0000a0", "#ffff00a0", "#00ffffa0"]
         />
       </div>
     </div>
   );
 };
+```
+
+### options
+```ts
+interface AudioVisualProps {
+    /**
+     * the audio element ref created by useRef() or React.createRef()
+     */
+    audio: RefObject<HTMLAudioElement>;
+    /**
+     * frequencyBinCount for AnalyserNode
+     * optional,
+     * default: 1024
+     * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AnalyserNode/frequencyBinCount)
+     */
+    fftSize?: number;
+    /**
+     * colors for gradient fill color
+     * optional
+     * default: ['#ff0000a0', '#ffff00a0', '#00ffffa0']
+     */
+    colors?: string[];
+    /**
+     * interval of bar, default 4, not equivalent to bar width
+     */
+    barInternal?: number;
+    /**
+     * space between bars, default 1
+     */
+    barSpace?: number;
+    /**
+     * height of caps, default 2
+     */
+    capHeight?: number;
+    /**
+     * gap between caps, default 2
+     */
+    capGap?: number;
+}
 ```
