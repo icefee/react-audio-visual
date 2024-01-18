@@ -92,13 +92,13 @@ function AudioVisual({
             const x = i * interval + gapWidth / 2
             const barWidth = Math.max(interval - gapWidth, 1)
             ctx.fillRect(x, height - intensity * height / 255, barWidth, intensity * height / 255)
-            ctx.fillRect(x, height - caps.current[i] * height / 255 - capHeight * dpr, barWidth, capHeight * dpr)
+            ctx.fillRect(x, height - caps.current[i] * height / 255 - capGap * dpr, barWidth, capHeight * dpr)
         }
     }
 
     useEffect(() => {
         drawCanvas(byteFrequency)
-    }, [width, height, byteFrequency])
+    }, [width, height, byteFrequency, barInternal, barSpace, capHeight, capGap])
 
     return (
         <div style={{
