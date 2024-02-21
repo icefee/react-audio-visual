@@ -9,7 +9,7 @@ const TestAudioPlayer = () => {
     return (
         <div style={{
             width: '100%',
-            maxWidth: 577,
+            maxWidth: 600,
             margin: '0 auto'
         }}>
             <audio

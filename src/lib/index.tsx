@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, RefObject } from 'react';
-import useResizeObserver from './hook/useResizeObserver';
-import useAudioContext from './hook/useAudioContext';
+import React, { useEffect, useRef, RefObject } from 'react'
+import useResizeObserver from './hook/useResizeObserver'
+import useAudioContext from './hook/useAudioContext'
+import type { MediaRefType } from './types'
 
 interface AudioVisualProps {
     /**
      * the audio element ref created by useRef() or React.createRef()
      */
-    audio: RefObject<HTMLAudioElement>;
+    audio: MediaRefType;
     /**
      * frequencyBinCount for AnalyserNode
      * optional,
@@ -51,7 +52,7 @@ function AudioVisual({
     const dpr = window.devicePixelRatio;
     const caps = useRef<number[]>()
 
-    const { byteFrequency } = useAudioContext(audio.current, fftSize)
+    const { byteFrequency } = useAudioContext(audio, fftSize)
 
     const { ref, width: w, height: h } = useResizeObserver()
     const width = w * dpr, height = h * dpr;
@@ -71,9 +72,8 @@ function AudioVisual({
             ctx.fillStyle = colors[0] ?? '#fff'
         }
         ctx.clearRect(0, 0, width, height)
-        const interval = width / Math.floor(width / (barInternal * dpr))
         const step = Math.floor(
-            interval * fftSize / width
+            fftSize / Math.ceil(width / barInternal / dpr)
         )
         const steps = Math.floor(fftSize / step);
         if (!caps.current || caps.current && caps.current.length !== steps) {
@@ -85,6 +85,7 @@ function AudioVisual({
             )
         }
         const gapWidth = barSpace * dpr
+        const interval = width / steps
         for (let i = 0; i < steps; i++) {
             const intensity = Math.round(
                 buffer.slice(i, i + step).reduce(

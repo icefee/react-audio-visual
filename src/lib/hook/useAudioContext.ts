@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import useMediaPlayState from './useMediaPlayState';
-import useRequestAnimationFrame from './useRequestAnimationFrame';
+import { useState, useEffect, useRef } from 'react'
+import useMediaPlayState from './useMediaPlayState'
+import useRequestAnimationFrame from './useRequestAnimationFrame'
+import type { MediaRefType } from '../types'
 
-function useAudioContext(audio: HTMLAudioElement | null, fftSize = 2048) {
-    const { playing } = useMediaPlayState(audio)
+function useAudioContext(mediaRef: MediaRefType, fftSize = 2048) {
+    const { playing } = useMediaPlayState(mediaRef.current)
     const audioContext = useRef<AudioContext>()
     const mediaSource = useRef<MediaElementAudioSourceNode>()
     const analyser = useRef<AnalyserNode>()
@@ -17,30 +18,34 @@ function useAudioContext(audio: HTMLAudioElement | null, fftSize = 2048) {
     }
 
     useEffect(() => {
-        if (playing) {
+        if (playing && audioContext.current) {
             startAnalyser()
         }
     }, [ts, playing])
 
     useEffect(() => {
-        if (!audio) {
+        if (!mediaRef.current) {
             return;
         }
-        if (!audioContext.current) {
-            audioContext.current = new AudioContext();
-            mediaSource.current = audioContext.current.createMediaElementSource(audio);
-            analyser.current = audioContext.current.createAnalyser();
+        if (playing) {
+            if (!audioContext.current) {
+                audioContext.current = new AudioContext()
+                mediaSource.current = audioContext.current.createMediaElementSource(mediaRef.current)
+                analyser.current = audioContext.current.createAnalyser()
+            }
+            analyser.current!.fftSize = fftSize;
+            mediaSource.current!.connect(analyser.current!)
+            analyser.current!.connect(audioContext.current.destination)
+            audioContext.current.resume();
         }
-        analyser.current!.fftSize = fftSize;
-        mediaSource.current!.connect(analyser.current!);
-        analyser.current!.connect(audioContext.current.destination);
-        audioContext.current.resume();
         return () => {
-            audioContext.current!.suspend();
-            mediaSource.current!.disconnect();
-            analyser.current!.disconnect();
+            if (playing) {
+                audioContext.current!.suspend()
+                mediaSource.current!.disconnect()
+                analyser.current!.disconnect()
+            }
         }
-    }, [audio, playing, fftSize])
+    }, [mediaRef.current, playing, fftSize])
 
     return { byteFrequency }
 }
