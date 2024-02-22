@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import type { MediaRefType } from '../types'
 
-function useMediaPlayState(media: HTMLMediaElement | null) {
+function useMediaPlayState(media: MediaRefType) {
     const [playing, setPlaying] = useState(false)
     const onPlay = () => {
         setPlaying(true)
@@ -9,17 +10,13 @@ function useMediaPlayState(media: HTMLMediaElement | null) {
         setPlaying(false)
     }
     useEffect(() => {
-        if (media) {
-            media.addEventListener('play', onPlay)
-            media.addEventListener('pause', onPause)
-        }
+        media.current?.addEventListener('play', onPlay)
+        media.current?.addEventListener('pause', onPause)
         return () => {
-            if (media) {
-                media.removeEventListener('play', onPlay)
-                media.removeEventListener('pause', onPause)
-            }
+            media.current?.removeEventListener('play', onPlay)
+            media.current?.removeEventListener('pause', onPause)
         }
-    }, [media])
+    }, [])
     return { playing }
 }
 

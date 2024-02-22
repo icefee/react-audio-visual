@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, RefObject } from 'react'
+import React, { useEffect, useRef } from 'react'
 import useResizeObserver from './hook/useResizeObserver'
 import useAudioContext from './hook/useAudioContext'
 import type { MediaRefType } from './types'
@@ -54,13 +54,11 @@ function AudioVisual({
 
     const { byteFrequency } = useAudioContext(audio, fftSize)
 
-    const { ref, width: w, height: h } = useResizeObserver()
+    const { ref, width: w, height: h } = useResizeObserver<HTMLCanvasElement>()
     const width = w * dpr, height = h * dpr;
 
-    const canvas = useRef<HTMLCanvasElement | null>(null)
-
     const drawCanvas = (buffer: Uint8Array) => {
-        const ctx = canvas.current!.getContext('2d')!
+        const ctx = ref.current!.getContext('2d')!
         if (colors.length > 1) {
             const gradient = ctx.createLinearGradient(width / 2, 0, width / 2, height)
             for (let i = 0; i < colors.length; i++) {
@@ -97,8 +95,9 @@ function AudioVisual({
             }
             const x = i * interval + gapWidth / 2
             const barWidth = Math.max(interval - gapWidth, 1)
-            ctx.fillRect(x, height - intensity * height / 255, barWidth, intensity * height / 255)
-            ctx.fillRect(x, height - caps.current[i] * height / 255 - capGap * dpr, barWidth, capHeight * dpr)
+            const rate = height / 255
+            ctx.fillRect(x, height - intensity * rate, barWidth, intensity * rate)
+            ctx.fillRect(x, height - caps.current[i] * rate - capGap * dpr, barWidth, capHeight * dpr)
         }
     }
 
@@ -107,21 +106,16 @@ function AudioVisual({
     }, [width, height, byteFrequency, barInternal, barSpace, capHeight, capGap])
 
     return (
-        <div style={{
-            width: '100%',
-            height: '100%'
-        }} ref={ref}>
-            <canvas
-                width={width}
-                height={height}
-                ref={canvas}
-                style={{
-                    display: 'block',
-                    width: '100%',
-                    height: '100%'
-                }}
-            />
-        </div>
+        <canvas
+            width={width}
+            height={height}
+            ref={ref}
+            style={{
+                display: 'block',
+                width: '100%',
+                height: '100%'
+            }}
+        />
     )
 }
 

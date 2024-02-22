@@ -1,2 +1,1 @@
-
-export type MediaRefType = React.RefObject<HTMLAudioElement | HTMLVideoElement>
+export type MediaRefType = React.RefObject<HTMLMediaElement | null>

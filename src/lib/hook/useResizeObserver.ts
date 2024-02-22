@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react'
 
 function useResizeObserver<T extends HTMLElement = HTMLDivElement>() {
 
@@ -20,7 +20,7 @@ function useResizeObserver<T extends HTMLElement = HTMLDivElement>() {
     }
 
     useEffect(() => {
-        
+
         const resizeObserver = new ResizeObserver(onResize)
         resizeObserver.observe(ref.current)
 

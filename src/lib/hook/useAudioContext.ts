@@ -3,8 +3,8 @@ import useMediaPlayState from './useMediaPlayState'
 import useRequestAnimationFrame from './useRequestAnimationFrame'
 import type { MediaRefType } from '../types'
 
-function useAudioContext(mediaRef: MediaRefType, fftSize = 2048) {
-    const { playing } = useMediaPlayState(mediaRef.current)
+function useAudioContext(media: MediaRefType, fftSize = 2048) {
+    const { playing } = useMediaPlayState(media)
     const audioContext = useRef<AudioContext>()
     const mediaSource = useRef<MediaElementAudioSourceNode>()
     const analyser = useRef<AnalyserNode>()
@@ -24,13 +24,13 @@ function useAudioContext(mediaRef: MediaRefType, fftSize = 2048) {
     }, [ts, playing])
 
     useEffect(() => {
-        if (!mediaRef.current) {
+        if (!media.current) {
             return;
         }
         if (playing) {
             if (!audioContext.current) {
                 audioContext.current = new AudioContext()
-                mediaSource.current = audioContext.current.createMediaElementSource(mediaRef.current)
+                mediaSource.current = audioContext.current.createMediaElementSource(media.current)
                 analyser.current = audioContext.current.createAnalyser()
             }
             analyser.current!.fftSize = fftSize;
@@ -45,7 +45,7 @@ function useAudioContext(mediaRef: MediaRefType, fftSize = 2048) {
                 analyser.current!.disconnect()
             }
         }
-    }, [mediaRef.current, playing, fftSize])
+    }, [playing, fftSize])
 
     return { byteFrequency }
 }
