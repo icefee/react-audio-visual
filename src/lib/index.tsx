@@ -11,7 +11,7 @@ interface AudioVisualProps {
     /**
      * frequencyBinCount for AnalyserNode
      * optional,
-     * default: 1024
+     * default: 2048
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AnalyserNode/frequencyBinCount)
      */
     fftSize?: number;

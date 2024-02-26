@@ -23,7 +23,7 @@ yarn add react-audio-visual
 import AudioVisual from "react-audio-visual";
 
 const TestAudioPlayer = () => {
-  const audio = useRef<HTMLAudioElement>(null);
+  const audio = useRef<HTMLAudioElement | null>(null);
 
   return (
     <div
@@ -64,7 +64,7 @@ interface AudioVisualProps {
     /**
      * frequencyBinCount for AnalyserNode
      * optional,
-     * default: 1024
+     * default: 2048
      * [MDN Reference](https://developer.mozilla.org/docs/Web/API/AnalyserNode/frequencyBinCount)
      */
     fftSize?: number;
